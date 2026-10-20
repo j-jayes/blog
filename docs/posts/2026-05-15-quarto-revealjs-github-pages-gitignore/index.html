@@ -174,8 +174,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-more">    
         <li>
-    <a class="dropdown-item" href="https://j-jayes.github.io/recipes/">
+    <a class="dropdown-item" href="https://talks.jonathanjayes.com">
+ <span class="dropdown-text">Talks and workshops</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://projects.jonathanjayes.com">
+ <span class="dropdown-text">Projects</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://recipes.jonathanjayes.com">
  <span class="dropdown-text">My personal cookbook</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://insta.jonathanjayes.com">
+ <span class="dropdown-text">Instagram</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../content/generative-ai-articles-listing.html">
@@ -206,6 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-problem" id="toc-the-problem" class="nav-link active" data-scroll-target="#the-problem">The problem</a></li>
   <li><a href="#the-cause" id="toc-the-cause" class="nav-link" data-scroll-target="#the-cause">The cause</a></li>
   <li><a href="#the-fix" id="toc-the-fix" class="nav-link" data-scroll-target="#the-fix">The fix</a></li>
+  <li><a href="#update-october-2026" id="toc-update-october-2026" class="nav-link" data-scroll-target="#update-october-2026">Update, October 2026</a></li>
   </ul>
 </nav>
     </div>
@@ -279,6 +292,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"fix: un-ignore revealjs dist/ for GitHub Pages"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Thanks current me!</p>
+</section>
+<section id="update-october-2026" class="level2">
+<h2 class="anchored" data-anchor-id="update-october-2026">Update, October 2026</h2>
+<p>It happened again, this time on <a href="https://j-jayes.github.io/foocafe-talk/">my Foo Café talk</a>. That deck is a single <code>index.qmd</code> rather than a Quarto project, so Quarto puts its libraries next to the page in <code>index_files/libs/revealjs/dist/</code>. The fix above names <code>docs/site_libs/...</code>, so it didn’t cover it.</p>
+<p>Rather than patching a new path every time, I made my own version of the template. It is GitHub’s Python <code>.gitignore</code>, unchanged, with a Quarto block at the end:</p>
+<pre><code># Quarto
+/.quarto/
+**/*.quarto_ipynb
+
+# Never ignore the libraries Quarto renders next to its HTML
+!**/site_libs/
+!**/site_libs/**
+!**/*_files/
+!**/*_files/**</code></pre>
+<p>Order matters here. In a <code>.gitignore</code> the last rule that matches wins, so the exemptions have to come after <code>dist/</code>. Python’s own build output is still ignored.</p>
+<p>It lives in a template repo, <a href="https://github.com/j-jayes/quarto-python-template">j-jayes/quarto-python-template</a>. For a new project:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo create my-project <span class="at">--template</span> j-jayes/quarto-python-template <span class="at">--public</span> <span class="at">--clone</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>And for an existing one:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/j-jayes/quarto-python-template/main/.gitignore <span class="at">-o</span> .gitignore</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then re-render, and commit the files that suddenly appear in <code>git status</code>.</p>
 
 
 </section>
