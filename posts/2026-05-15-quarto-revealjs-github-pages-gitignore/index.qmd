@@ -61,3 +61,37 @@ git push
 ```
 
 Thanks current me!
+
+## Update, October 2026
+
+It happened again, this time on [my Foo Café talk](https://j-jayes.github.io/foocafe-talk/). That deck is a single `index.qmd` rather than a Quarto project, so Quarto puts its libraries next to the page in `index_files/libs/revealjs/dist/`. The fix above names `docs/site_libs/...`, so it didn't cover it.
+
+Rather than patching a new path every time, I made my own version of the template. It is GitHub's Python `.gitignore`, unchanged, with a Quarto block at the end:
+
+```
+# Quarto
+/.quarto/
+**/*.quarto_ipynb
+
+# Never ignore the libraries Quarto renders next to its HTML
+!**/site_libs/
+!**/site_libs/**
+!**/*_files/
+!**/*_files/**
+```
+
+Order matters here. In a `.gitignore` the last rule that matches wins, so the exemptions have to come after `dist/`. Python's own build output is still ignored.
+
+It lives in a template repo, [j-jayes/quarto-python-template](https://github.com/j-jayes/quarto-python-template). For a new project:
+
+```bash
+gh repo create my-project --template j-jayes/quarto-python-template --public --clone
+```
+
+And for an existing one:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/j-jayes/quarto-python-template/main/.gitignore -o .gitignore
+```
+
+Then re-render, and commit the files that suddenly appear in `git status`.
