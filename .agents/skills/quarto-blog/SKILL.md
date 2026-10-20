@@ -5,7 +5,7 @@ description: How the Quarto blog is structured, configured, and rendered. Use th
 
 ## Site overview
 
-This is a Quarto website blog (type: `website`). Source lives in `j-jayes/interlude-one`. The Svelte home page, talks, projects and insta sites live in `j-jayes/jonathanjayes.com`. interludeone.com (Netlify) redirects every path here via `_redirects`.
+This is a Quarto website blog (type: `website`). Source lives in `j-jayes/blog`. The Svelte home page, talks, projects and insta sites live in `j-jayes/jonathanjayes.com`. interludeone.com (Netlify) redirects every path here via `_redirects`.
 
 Live URL: `https://blog.jonathanjayes.com`
 

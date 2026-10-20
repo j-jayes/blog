@@ -33,7 +33,7 @@ The `posts/` directory contains R binary data files (`.rds`) used by Quarto/R po
 
 4. **Re-added remote and force-pushed**:
    ```powershell
-   git remote add origin https://github.com/j-jayes/jonathanjayes.com.git
+   git remote add origin https://github.com/j-jayes/blog.git
    git push --force origin main
    ```
 
