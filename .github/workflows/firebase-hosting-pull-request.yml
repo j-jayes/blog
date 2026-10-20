@@ -5,6 +5,12 @@ on:
     branches:
       - main
 
+# The deploy action posts the preview URL as a check run and a PR comment.
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
 jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
