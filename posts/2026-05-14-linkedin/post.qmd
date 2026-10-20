@@ -1,0 +1,386 @@
+---
+title: "Why does LinkedIn keep showing me people yelling at banks?"
+author: "Jonathan Jayes"
+date: "05-14-2026"
+draft: true
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-block-border-left: "#31BAE9"
+execute:
+  eval: true
+  warning: false
+  message: false
+categories: [game-theory, economics, platforms]
+image: "assets/Screenshot 2026-05-14 at 15.17.18.png"
+description: "A back-of-the-envelope game-theory model for why LinkedIn surfaces customer-service grievances against companies, even though it annoys readers like me and embarrasses the firms."
+---
+
+## The puzzle
+
+I follow a handful of South African banks on LinkedIn. The pitch, in my head, is reasonable enough: every now and then they post an interesting research note, or a graduate programme, or a job. Sometimes they even post a chart I want to steal.
+
+The reality is that the most common thing those accounts produce in my feed is *other people* shouting at them. A customer can't get hold of a human, the chatbot is unhelpful, a UIF form has gone missing for two years — and so the customer tags the bank in a public post to make the problem expensive enough that someone notices.
+
+Here is a fairly typical example I scrolled past this morning:
+
+![A LinkedIn user pressing Old Mutual publicly about an unresolved HR/UIF issue. The reply ("thanks, please check your inbox") is the genre-defining response.](assets/Screenshot%202026-05-14%20at%2015.17.18.png)
+
+I don't really care about Jackson's UIF forms. I'm sorry he's having a bad time, but seeing his post does not change my view of Old Mutual one way or the other. It just makes my feed slightly worse. I have unfollowed several banks for exactly this reason.
+
+So here is the puzzle that I want to think through. Three groups have skin in this game:
+
+1. **Me**, a reader who follows companies for the occasional useful post.
+2. **Complainers**, who post publicly precisely because making the firm's silence visible is the whole point.
+3. **The companies themselves**, who would much rather LinkedIn be a recruiting and brand channel and not a customer-service triage queue.
+
+LinkedIn very obviously *can* identify these posts — the boilerplate corporate reply ("Hi, thanks for raising this, please check your DMs") is a tell that the firm's social-media team has tooling for them. So why does the algorithm push them into my feed? Is it really worth annoying readers and embarrassing customers in order to keep complainers happy enough to stay on the platform?
+
+I think the answer is yes, and I think you can see why with a fairly small game-theory model. Below I build it up in three stages — a dominance-solvable game between a complainer and a firm, then the same game extended with a reader externality, then a platform design problem with LinkedIn choosing how loud to make the complaints. Then I want to compare the result to a useful natural experiment from Germany, where defamation law has effectively forced the equivalent platform — Google reviews — into the opposite corner.
+
+```{r}
+#| label: setup-params
+#| include: false
+
+library(tidyverse)
+
+theme_blog <- function() {
+  theme_minimal(base_size = 12) +
+    theme(
+      plot.title       = element_text(face = "bold", size = 13),
+      plot.subtitle    = element_text(colour = "grey40", size = 10),
+      legend.position  = "bottom",
+      panel.grid.minor = element_blank()
+    )
+}
+
+# ---------- Model 1 / 2 parameters ----------
+m_val   <- 2    # firm monitoring / reply cost
+g_val   <- 5    # grievance cost   (Model 2 illustration)
+k_C_val <- 1.5  # posting cost     (Model 2 illustration)
+
+# ---------- Model 3 parameters ----------
+N_C    <- 20;  N_R    <- 30;   N_F   <- 10
+r      <- 0.7; g      <-  4;   k_C   <-  0.5
+c_val  <- 0.7; pi_val <- 0.2;  m     <-  2
+kappa  <- 50   # quadratic penalty: viral blowup risk + reader churn
+```
+
+## The model
+
+The next three sections are a memo-style writeup. If you don't want the matrices, skip to [Why "please DM us" exists](#why-please-dm-us-exists) and the [German comparison](#a-natural-experiment-google-reviews-in-germany).
+
+### Notation
+
+| Symbol | Meaning |
+|---|---|
+| $C$ | Complainer (a customer with an unresolved grievance) |
+| $F$ | Firm (the company being complained about) |
+| $R$ | Reader (an ordinary scroller, like me) |
+| $L$ | LinkedIn (the platform) |
+| $g$ | Complainer's underlying grievance cost (without resolution) |
+| $r$ | Probability the firm resolves the grievance after a public post |
+| $k_C$ | Cost to the complainer of writing and posting publicly (not incurred when DM-ing) |
+| $h$ | Reputational damage to the firm from an *unanswered* public post; $h = \alpha \cdot N_R \cdot \delta$ |
+| $\delta$ | Salience of a grievance post per reader-impression (treated as a constant) |
+| $m$ | Cost to the firm of monitoring + producing the boilerplate reply |
+| $b$ | Reader's per-impression benefit from a useful post (job, article) |
+| $c$ | Reader's per-impression cost from seeing a grievance post |
+| $\pi$ | Per-period probability that a reader becomes a complainer (the "insurance" parameter) |
+| $N_C,\, N_R,\, N_F$ | Number of complainers, readers, and firms on the platform |
+| $\alpha$ | LinkedIn's exposure parameter: probability a grievance post reaches followers of the tagged firm who do not follow the complainer |
+
+### Model 1 — 2×2 dominance-solvable game (Complainer vs. Firm)
+
+Strip out the audience for a moment. The complainer chooses between *Post publicly* and *DM the firm only*. The firm chooses between *Respond* and *Ignore*.
+
+Without an audience, a "public" post is no more visible than a DM, so the firm's payoff from *Ignore* is strictly higher than from *Respond* (it saves the cost $m$ and faces no reputational damage $h = \alpha \cdot N_R \cdot \delta = 0$ when nobody is watching). *Ignore* is the firm's dominant strategy. Given the firm will ignore any contact, *DM* weakly dominates *Post* for the complainer — posting publicly incurs cost $k_C$ while achieving the same resolution probability of zero. The complainer therefore strictly prefers DM, ending up with payoff $-g$.
+
+| | Firm: Respond | Firm: Ignore |
+|---|---|---|
+| **C: Post** | $-k_C,\; -m$ | $-g - k_C,\; 0$ |
+| **C: DM** | $\;0,\; -m$ | $\;-g,\; 0$ |
+
+Ignore is the firm's uniquely dominant strategy. Given this, the complainer strictly prefers DM (payoff $-g$) over posting publicly (payoff $-g - k_C$). The unique equilibrium is `(DM, Ignore)` with payoffs $(-g,\; 0)$. The grievance never gets resolved. This is exactly the world the complainer is trying to escape — and it is what motivates the next layer.
+
+```{r}
+#| label: fig-firm-tipping
+#| fig-cap: "The firm's switching point. When nobody is watching (h ≈ 0), Ignore strictly dominates. Once audience-weighted reputational damage h exceeds the monitoring cost m, Respond becomes the better choice."
+#| fig-height: 4
+
+tibble(h = seq(0, 8, by = 0.05)) |>
+  mutate(
+    Ignore  = -h,
+    Respond = -m_val
+  ) |>
+  pivot_longer(-h, names_to = "Strategy", values_to = "Payoff") |>
+  ggplot(aes(h, Payoff, colour = Strategy)) +
+  geom_line(linewidth = 1.3) +
+  geom_vline(xintercept = m_val, linetype = "dashed", colour = "grey40") +
+  annotate(
+    "label", x = m_val, y = -5.5,
+    label = paste0("Tipping point\nh = m = ", m_val),
+    hjust = 0.5, size = 3.2, fill = "white", label.size = 0, colour = "grey30"
+  ) +
+  scale_colour_manual(values = c("Ignore" = "#E07B54", "Respond" = "#2196F3")) +
+  labs(
+    title    = "When does the firm stop ignoring?",
+    subtitle = "Respond dominates once reputational damage h exceeds reply cost m",
+    x        = "Reputational damage h  (audience size × salience per impression)",
+    y        = "Firm payoff",
+    colour   = NULL
+  ) +
+  theme_blog()
+```
+
+### Model 2 — Add the Reader (2-player game with reader externality)
+
+Now put me in the room. When the complainer posts publicly, the reader sees it with some probability and pays cost $c$. When the firm fails to respond visibly, it suffers reputational damage $h = \alpha \cdot N_R \cdot \delta$ proportional to the size of the audience. The boilerplate reply costs the firm $m$ but caps the reputational damage at roughly zero.
+
+The key asymmetry is that a public post imposes reputational stakes — an unanswered public post costs the firm $h$, while an unanswered DM costs it nothing. Because the firm's reply cost $m$ is the same regardless of channel but the consequence of silence differs, the firm's dominant reply depends on how it was contacted. Wherever $h > m$, *Respond* dominates a public post; wherever $h = 0$, *Ignore* dominates a DM. Mapping each channel to its equilibrium firm response:
+
+| C’s strategy | Firm’s equilibrium response | C payoff | F payoff |
+|---|---|---|---|
+| Post publicly | Respond (since $h > m$) | $-(1-r)g - k_C$ | $-m$ |
+| DM only | Ignore (no audience, $h = 0$) | $-g$ | $0$ |
+
+For the reader I keep a separate ledger, because the reader has no action in this stage — they just absorb the externality:
+
+$$U_R \;=\; b \cdot N_\text{useful} \;-\; c \cdot N_\text{grievance}.$$
+
+The reader stays on the platform as long as their **participation constraint** holds:
+
+$$\mathbb{E}[\,b \cdot N_\text{useful} - c \cdot N_\text{grievance}\,] \;\geq\; u_\text{outside}. \tag{PC-R}$$
+
+Two things follow.
+
+First, as long as $h > m$ — equivalently, as long as LinkedIn sets $\alpha$ high enough that $\alpha \cdot N_R \cdot \delta > m$ — the firm strictly prefers *Respond publicly* to *Ignore*, given a public post. The condition is not exogenous: it is satisfied precisely because LinkedIn has chosen a sufficiently high $\alpha$. The complainer anticipates this, and *Post* is now strictly better than *DM* whenever the increased resolution probability $r$ is high enough to outweigh the posting cost $k_C$ (i.e. when $r > k_C / g$, as shown in Figure 2).
+
+The equilibrium is `(Post, Respond publicly)` with payoffs roughly $( \,-(1-r)g - k_C,\; -m\,)$ for the complainer and firm. The complainer extracts a probability-$r$ resolution; the firm pays $m$ instead of $h$.
+
+Second — and this is the bit that matters for LinkedIn — the equilibrium *requires* the post to be visible. If LinkedIn set $\alpha$ low enough that $h < m$, we drop back to Model 1 and the complainer is screwed. The whole mechanism depends on $\alpha$ being in the region where $h > m$, which is exactly what Model 3 will show LinkedIn has an incentive to maintain.
+
+```{r}
+#| label: fig-complainer-decision
+#| fig-cap: "The complainer's tipping point. Net gain from posting vs DM-ing = r·g − k_C. Below the threshold r* = k_C/g the expected resolution gain is not worth the posting cost; above it, posting strictly dominates. Here g = 5, k_C = 1.5, so r* = 0.30."
+#| fig-height: 4
+
+r_star_c <- k_C_val / g_val
+
+tibble(r_val = seq(0, 1, by = 0.005)) |>
+  mutate(net_gain = r_val * g_val - k_C_val) |>
+  ggplot(aes(r_val, net_gain)) +
+  annotate("rect",
+    xmin = 0, xmax = r_star_c, ymin = -Inf, ymax = Inf,
+    fill = "#E07B54", alpha = 0.08) +
+  annotate("rect",
+    xmin = r_star_c, xmax = 1, ymin = -Inf, ymax = Inf,
+    fill = "#4CAF50", alpha = 0.08) +
+  geom_hline(yintercept = 0, colour = "grey60", linewidth = 0.7) +
+  geom_line(linewidth = 1.3, colour = "#2196F3") +
+  geom_vline(xintercept = r_star_c, linetype = "dashed", colour = "grey40") +
+  annotate("text",
+    x = r_star_c / 2, y = 2.8,
+    label = "DM\ndominates", colour = "#E07B54", size = 3.5, fontface = "bold") +
+  annotate("text",
+    x = r_star_c + (1 - r_star_c) / 2, y = 2.8,
+    label = "Post\ndominates", colour = "#4CAF50", size = 3.5, fontface = "bold") +
+  annotate(
+    "label", x = r_star_c, y = -1.1,
+    label = paste0("r* = ", round(r_star_c, 2)),
+    hjust = 0.5, size = 3.2, fill = "white", label.size = 0, colour = "grey30"
+  ) +
+  labs(
+    title    = "When should the complainer go public?",
+    subtitle = "Net gain from posting vs DM = r·g − k_C; post when r > r* = k_C / g",
+    x        = "Resolution probability r  (how likely the firm is to act after a public post)",
+    y        = "Net gain from posting vs DM"
+  ) +
+  theme_blog()
+```
+
+### Model 3 — LinkedIn as mechanism designer (multi-sided market design)
+
+Scale up from the two-player game to a platform with $N_C$ complainers, $N_R$ readers, and $N_F$ firms. LinkedIn picks a single exposure parameter $\alpha \in [0, 1]$: the probability that a given grievance post reaches followers of the tagged *firm* who do not follow the complainer — people like me, who chose to follow a bank for research notes and job ads, not for its unhappy customers.
+
+The three groups respond to $\alpha$ differently:
+
+- **Complainer** surplus is roughly $\alpha \cdot r \cdot g - k_C$: more exposure means more pressure on the firm and a higher probability of resolution. Increasing in $\alpha$.
+- **Firm** surplus is roughly $-\,\alpha \cdot m$ per complainer (each amplified post forces a reply), plus a higher tail risk of viral reputational damage in the cases where the boilerplate doesn't work. Decreasing in $\alpha$.
+- **Reader** surplus is the trickiest, and it is the part that surprised me. The naive answer is that reader surplus is decreasing in $\alpha$ — more grievances in the feed, more annoyance, $-c$ on every impression. That is true on the *current-period* margin.
+
+  **But there is an option value, and it matters.** Every reader is a potential future complainer. If I am ever the one with the unresolved UIF form, I want $\alpha$ to be high — because $\alpha$ is what gives a public post its teeth. Let $\pi$ be the per-period probability that a given reader becomes a complainer. The reader's expected surplus is then
+
+$$U_R(\alpha) \;=\; b \cdot N_\text{useful} \;-\; \alpha \cdot c \cdot N_\text{grievance} \;+\; \pi \cdot \alpha \cdot r \cdot g, \tag{1}$$
+
+  where the last term is the *insurance value* of a high-$\alpha$ platform: the chance of becoming a complainer times the expected resolution gain a public post delivers. The first-order condition with respect to $\alpha$ is
+
+$$-\,c \cdot N_\text{grievance} \;+\; \pi \cdot r \cdot g \;\gtrless\; 0,$$
+
+  which can go either way. For most readers in most weeks $\pi$ is small, so the marginal annoyance dominates and they would individually prefer $\alpha = 0$. But this is a collective action problem: each reader would vote to suppress grievance posts in the current period, yet each also benefits from the platform's enforcement power when their own turn comes. The option value is large when it materialises ($r \cdot g$ can be substantial), which is why most readers haven't actually deleted their accounts.
+
+LinkedIn is not maximising any one player's surplus; it is maximising **engagement**, which is well approximated by the sum of participation surpluses subject to each side's outside option. That gives the platform's problem:
+
+$$\max_{\alpha \in [0,1]} \;\; \underbrace{N_C \cdot (\alpha r g - k_C)}_{\text{complainer side}} \;+\; \underbrace{N_R \cdot U_R(\alpha)}_{\text{reader side}} \;-\; \underbrace{N_F \cdot \alpha m}_{\text{firm side}}$$
+
+subject to
+
+$$U_F(\alpha) \;\geq\; u^F_\text{outside}, \qquad U_R(\alpha) \;\geq\; u^R_\text{outside}, \qquad U_C(\alpha) \;\geq\; u^C_\text{outside}. \tag{PC}$$
+
+Two predictions fall out:
+
+1. **The interior optimum is strictly positive whenever $A > 0$.** From the first-order condition, $\alpha^\star = A\,/\,(2\kappa)$ where $A \equiv N_C r g + N_R(-c + \pi r g) - N_F m$. Whether the unconstrained optimum is positive depends on this balance of complainer and reader gains against firm costs — *not* directly on the firm's outside option. What the firm's outside option determines instead is feasibility: if firms can credibly exit LinkedIn (high $u^F_\text{outside}$), their participation constraint binds at a lower $\alpha$, pushing LinkedIn to a *constrained* optimum below $\alpha^\star$. South African banks cannot credibly exit — they need LinkedIn for recruiting — so their constraint is slack and LinkedIn reaches the unconstrained interior.
+2. **The boilerplate reply is itself an equilibrium object.** Once $\alpha^\star > 0$, the firm's optimal action conditional on a public post is the cheapest response that converts a public grievance into a semi-private one. That is exactly the "Hi, thanks for raising this, please check your inbox" template.
+
+A few comparative statics that I find satisfying:
+
+- If a competing professional network emerges, giving firms a credible exit option, $u^F_\text{outside}$ rises and the firm's participation constraint starts to bind below the unconstrained $\alpha^\star$. The constrained optimum falls — grievance posts get quieter — even though the unconstrained $\alpha^\star$ is unchanged. (Glassdoor concerns *employee* reviews of employers rather than customer-service complaints, so the analogy is loose; the closer parallel is any platform where firms can shift their recruiting budget elsewhere and credibly threaten to leave.)
+- If customer-service quality declines economy-wide, $g$ rises, complainer surplus from a given $\alpha$ rises, and the platform's optimum $\alpha^\star$ rises with it. The feed gets more shouty.
+- If the share of "annoyed scrollers" with low $\pi$ rises, reader surplus tilts negative and $\alpha^\star$ falls — but only until enough readers actually leave to bind the reader participation constraint, at which point LinkedIn re-tunes.
+
+That last point is, I think, what actually disciplines the platform. It is not that LinkedIn is being kind to companies; it is that if I unfollow enough banks and eventually leave the platform, $N_R$ drops, and the recruiting side's value drops with it.
+
+```{r}
+#| label: fig-surplus-components
+#| fig-cap: "How each side's surplus contribution changes as LinkedIn's exposure parameter α rises. Complainer surplus grows steeply (more pressure → more resolutions). The firm's monitoring cost is a significant drag. Reader net effect is mildly negative at these parameters — marginal annoyance (c = 0.7) slightly outweighs the option value (π·r·g = 0.2 × 0.7 × 4 = 0.56)."
+#| fig-height: 4.5
+
+tibble(alpha = seq(0, 1, by = 0.005)) |>
+  mutate(
+    `Complainer surplus`   =  N_C * alpha * r * g,
+    `Reader net effect`    =  N_R * alpha * (-c_val + pi_val * r * g),
+    `Firm monitoring cost` = -N_F * alpha * m
+  ) |>
+  pivot_longer(-alpha, names_to = "Component", values_to = "Value") |>
+  ggplot(aes(alpha, Value, colour = Component)) +
+  geom_hline(yintercept = 0, colour = "grey70", linewidth = 0.5) +
+  geom_line(linewidth = 1.2) +
+  scale_colour_manual(values = c(
+    "Complainer surplus"   = "#2196F3",
+    "Reader net effect"    = "#4CAF50",
+    "Firm monitoring cost" = "#E07B54"
+  )) +
+  labs(
+    title    = "How each side's surplus varies with α",
+    subtitle = "Complainer gains dominate; firm cost and reader annoyance are the drags",
+    x        = "Exposure parameter α",
+    y        = "Surplus contribution (relative to α = 0)",
+    colour   = NULL
+  ) +
+  theme_blog()
+```
+
+```{r}
+#| label: fig-platform-objective
+#| fig-cap: "LinkedIn's total platform objective as a function of α. The quadratic shape arises from convex penalties — viral blowup risk and reader churn — at high α. The interior maximum at α* ≈ 0.32 is LinkedIn's equilibrium choice. The German comparison (effective α driven toward zero by ex-post review removal) is marked in purple; it strands the platform well below its maximum."
+#| fig-height: 4.5
+
+A_const      <- N_C * r * g + N_R * (-c_val + pi_val * r * g) - N_F * m
+alpha_star_3 <- A_const / (2 * kappa)
+
+df_obj <- tibble(alpha = seq(0, 1, by = 0.002)) |>
+  mutate(objective = A_const * alpha - kappa * alpha^2)
+
+obj_at_star <- A_const * alpha_star_3 - kappa * alpha_star_3^2
+
+ggplot(df_obj, aes(alpha, objective)) +
+  annotate("rect", xmin = 0, xmax = 0.06, ymin = -Inf, ymax = Inf,
+    fill = "#9C27B0", alpha = 0.07) +
+  geom_line(linewidth = 1.4, colour = "#2196F3") +
+  geom_vline(xintercept = alpha_star_3, linetype = "dashed", colour = "grey40") +
+  geom_point(x = alpha_star_3, y = obj_at_star, colour = "#2196F3", size = 4) +
+  geom_point(x = 0,            y = 0,           colour = "#9C27B0", size = 4) +
+  annotate("label",
+    x = alpha_star_3 + 0.05, y = obj_at_star - 0.5,
+    label = paste0("LinkedIn\nα* ≈ ", round(alpha_star_3, 2)),
+    hjust = 0, size = 3, fill = "white", label.size = 0, colour = "#2196F3") +
+  annotate("label",
+    x = 0.08, y = -0.8,
+    label = "Germany\n(eff. α̃ → 0)",
+    hjust = 0, size = 3, fill = "white", label.size = 0, colour = "#9C27B0") +
+  labs(
+    title    = "LinkedIn's platform objective",
+    subtitle = paste0("Interior maximum at α* ≈ ", round(alpha_star_3, 2),
+                      ";  German defamation law drives effective α̃ toward zero"),
+    x        = "Exposure parameter α",
+    y        = "Total platform objective (α-dependent surplus)"
+  ) +
+  theme_blog()
+```
+
+```{r}
+#| label: fig-comparative-statics
+#| fig-cap: "Comparative statics: how α* shifts when key parameters change. Better grievance resolution outcomes (higher g) push LinkedIn toward more amplification. Expensive firm monitoring (higher m) pulls α* back down. Dashed verticals mark each scenario's interior optimum."
+#| fig-height: 4.5
+
+df_cs <- crossing(
+  tibble(
+    scenario = c(
+      "Baseline  (g = 4, m = 2)",
+      "Better resolution  (g = 6)",
+      "Expensive monitoring  (m = 4)"
+    ),
+    g_s = c(4, 6, 4),
+    m_s = c(2, 2, 4)
+  ),
+  tibble(alpha = seq(0, 1, by = 0.002))
+) |>
+  mutate(
+    A_s          = N_C * r * g_s + N_R * (-c_val + pi_val * r * g_s) - N_F * m_s,
+    objective    = A_s * alpha - kappa * alpha^2,
+    alpha_star_s = pmin(A_s / (2 * kappa), 1)
+  )
+
+ggplot(df_cs, aes(alpha, objective, colour = scenario)) +
+  geom_hline(yintercept = 0, colour = "grey80", linewidth = 0.5) +
+  geom_line(linewidth = 1.1) +
+  geom_vline(
+    data = distinct(df_cs, scenario, alpha_star_s),
+    aes(xintercept = alpha_star_s, colour = scenario),
+    linetype = "dashed", linewidth = 0.8
+  ) +
+  scale_colour_manual(values = c(
+    "Baseline  (g = 4, m = 2)"       = "#2196F3",
+    "Better resolution  (g = 6)"     = "#4CAF50",
+    "Expensive monitoring  (m = 4)" = "#E07B54"
+  )) +
+  labs(
+    title    = "Comparative statics: how α* shifts",
+    subtitle = "Better resolution pushes LinkedIn to amplify more; expensive monitoring damps it down",
+    x        = "Exposure parameter α",
+    y        = "Platform objective",
+    colour   = NULL
+  ) +
+  theme_blog()
+```
+
+## Why "please DM us" exists
+
+It falls out of Model 2 directly. The firm's optimal action conditional on a public post is whichever reply is cheapest in $m$ that still drives reputational damage $h$ to roughly zero. A public, generic, polite acknowledgement does that: it converts a grievance from "this firm ignores its customers" into "this firm has a process". The actual problem is then handled in DMs, where it is invisible, where the reputational stakes are gone, and where — crucially for the firm — the resolution probability $r$ can be lower without the audience noticing.
+
+The reply is not really aimed at the complainer. It is aimed at the audience.
+
+## A natural experiment: Google reviews in Germany
+
+There is a useful comparison here that pushes the model the other way. In Germany, businesses can — and do — get negative Google reviews removed under defamation law. [This Settle in Berlin write-up](https://www.settle-in-berlin.com/google-reviews-removal-defamation-in-germany/) walks through the mechanics.
+
+Unlike prior restraint, German defamation law works through *ex-post removal*: a business that obtains a court order can have a review taken down after it was published. In our model, what this does is raise $p_\text{remove}$ — the probability that a given negative post is eventually litigated away. The effective exposure the complainer can count on is $\tilde\alpha = \alpha \cdot (1 - p_\text{remove})$, which collapses toward zero when $p_\text{remove}$ is high. Google's nominal $\alpha$ may be unchanged; the *expected* reputational pressure a complainer can exert is what falls. The platform can no longer reach its own interior optimum because the constraint on effective $\tilde\alpha$ is set externally by courts. Three things follow, all of which match what people anecdotally report about German Google reviews:
+
+1. **Complainer surplus from posting collapses.** With $\tilde\alpha$ near zero, $\tilde\alpha \cdot r g - k_C$ is negative for any $k_C > 0$. Fewer people bother to post negative reviews, knowing they may be litigated away before accumulating enough reputational pressure to force a response.
+2. **The information value of the platform to the reader collapses.** $b$ — the per-impression benefit from a useful post — was partly being driven by the *signal* embedded in negative reviews. Strip the negative tail out of the distribution and the average review skews positive in a way that contains less information, not more.
+3. **The platform cannot reach its own interior optimum.** The objective function above is unchanged, but the feasible set has been chopped. Google would, if left to itself, set $\alpha^\star > 0$; the law drives effective $\tilde\alpha$ toward zero. The equilibrium is one in which the consumer side disengages from reviews as a signal — exactly the complaint everyone has about Google reviews in Germany.
+
+LinkedIn in South Africa sits at the opposite corner. There is no equivalent legal constraint on grievance posts, $\alpha$ is set by the platform, and the platform is choosing a strictly positive $\alpha^\star$ because that is what holds the complainer side in the market.
+
+## Next steps
+
+There is plenty this stripped-down model misses, and I want to be honest about it.
+
+- **Network effects on the reader side.** I have modelled $U_R$ as additive across impressions. In reality readers cluster, and the cost $c$ probably rises convexly once the feed tips past some threshold of negativity.
+- **Learning across complainers.** If the boilerplate reply gets identified as boilerplate, $h$ no longer collapses to zero on a public response, and the firm's problem gets harder. This is starting to happen — you can see it in the replies-to-replies.
+- **LinkedIn's actual objective.** I used "engagement" as a stand-in for what is presumably an ad-revenue-weighted objective. The qualitative results are the same as long as both sides of the market matter, but the interior optimum shifts.
+- **Asymmetric salience.** A negative post probably weighs more than a positive one in $U_R$, which would push $\alpha^\star$ down relative to a symmetric model. I haven't tried to put a number on it.
+
+I will probably keep unfollowing banks. But at least I now think I know why LinkedIn keeps re-introducing us.
+

@@ -9,7 +9,7 @@ about:
       href: https://twitter.com/JonathanJayes
     - icon: github
       text: Github
-      href: https://github.com
+      href: https://github.com/j-jayes
     - icon: mail
       text: Mail
       href: mailto:j0nathanjayes@gmail.com
@@ -83,6 +83,8 @@ education %>%
 ```
 
 ## Experience
+
+**Nexer Insight** | Data Scientist at [Nexer Insight](https://nexergroup.com/) | 2025 - present
 
 **Codera Analytics** | Data Scientist at [Codera Analytics](https://www.linkedin.com/company/coderaanalytics/)| December 2022 - October 2025
 

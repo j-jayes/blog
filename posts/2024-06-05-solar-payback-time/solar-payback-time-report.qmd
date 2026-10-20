@@ -27,7 +27,7 @@ include-in-header:
 
 I asked GPT-4.5 with deep research to investigate a solar system for me, in order to test its capabilities, inspired by a post by Timothy B. Lee titled in a somewhat clickbait manner, [*These experts were stunned by OpenAI Deep Research*](https://www.understandingai.org/p/these-experts-were-stunned-by-openai). I was interested to read that the experts Timothy consulted were impressed with the domain specific knowledge shown by the model, searching widely across the web for information to answer the expert's questions ranging from law to coding, to construction.
 
-Much like [my post on public transport between airports and city centers](https://interludeone.com/posts/2025-02-23-transit-trek/transit-trek), as each new iteration of LLM is announced, I have asked the models to investigate quite a complex domestic engineering problem; specifying a solar system for a house in South Africa, and creating a mechanism to calculate the payback time of the system.
+Much like [my post on public transport between airports and city centers](../2025-02-23-transit-trek/transit-trek.qmd), as each new iteration of LLM is announced, I have asked the models to investigate quite a complex domestic engineering problem; specifying a solar system for a house in South Africa, and creating a mechanism to calculate the payback time of the system.
 
 This post details the output that I received from GPT 4.5 Deep Research, and the analysis of the solar system that it proposed.
 

@@ -5,7 +5,7 @@ description: How the Quarto blog is structured, configured, and rendered. Use th
 
 ## Site overview
 
-This is a Quarto website blog (type: `website`) migrated from the `j-jayes/interlude-one` GitHub repo. Source lives in `j-jayes/jonathanjayes.com`.
+This is a Quarto website blog (type: `website`). Source lives in `j-jayes/interlude-one`. The Svelte home page, talks, projects and insta sites live in `j-jayes/jonathanjayes.com`. interludeone.com (Netlify) redirects every path here via `_redirects`.
 
 Live URL: `https://blog.jonathanjayes.com`
 
@@ -61,13 +61,13 @@ quarto preview
 quarto render posts/my-post/index.qmd
 ```
 
-Requires R 4.4+ and packages managed via `renv`. Run `renv::restore()` in R to install dependencies before first render.
+Frozen posts render without R. Re-executing an R post needs R 4.4+ and its packages installed locally; there is no renv lockfile.
 
 ## Freeze behaviour
 
 `freeze: auto` (or `freeze: true` in individual posts) means Quarto skips re-executing code cells if the source hasn't changed. Frozen outputs are stored in `_freeze/` and committed to git.
 
-**Implication for CI/CD**: GitHub Actions renders from source using R, so R-based posts re-execute on every push unless their `_freeze/` entry is committed.
+**Implication for CI/CD**: GitHub Actions installs Quarto only, no R. Every post with code must have its `_freeze/` entry committed, or the CI render fails.
 
 ## Adding a new post
 
@@ -85,13 +85,8 @@ Requires R 4.4+ and packages managed via `renv`. Run `renv::restore()` in R to i
 4. Commit both source (`posts/`) and rendered output (`docs/`, `_freeze/`)
 5. Push to `main` — GitHub Actions will re-render and deploy automatically
 
-## Rproj
-
-`quarto-template.Rproj` is the RStudio project file. Open it in RStudio to get the correct working directory and renv context.
-
 ## Known gotchas
 
 - `docs/` is **committed to git** and is the source of truth served by Firebase. Do not add it to `.gitignore`.
 - The excluded post `posts/2021-07-28-spanish-flu-mortality/` has `.Rmd` files that are explicitly skipped in `_quarto.yml` render list.
-- `index.html` in the repo root is a redirect shim from before the Quarto site was set up; it is superseded by `docs/index.html`.
-- The GitHub Actions workflow installs R packages via `r-lib/actions/setup-renv@v2`, which reads `renv.lock`. If new R packages are added locally, run `renv::snapshot()` and commit `renv.lock`.
+- `_redirects` is a Netlify file for interludeone.com. Quarto copies it into `docs/` via `project: resources`; Firebase ignores it.

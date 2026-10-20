@@ -2,7 +2,7 @@
 title: Gemini 2.5 helps me found out which jobs are available for South Africans at the OECD
 description: |
   A post about the abilities of Deep Research with Gemini 2.5
-image: "https://interludeone.com/posts/2021-04-03-container-ships/container-ships_files/figure-html/unnamed-chunk-6-1.png"
+image: "https://blog.jonathanjayes.com/posts/2021-04-03-container-ships/container-ships_files/figure-html/unnamed-chunk-6-1.png"
 author:
   - name: Jonathan Jayes & Gemini 2.5
 date: 2025-06-02

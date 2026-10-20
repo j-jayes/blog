@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    - _redirects
   render:
     - "*.qmd"
     - "*.Rmd"
@@ -14,13 +16,14 @@ website:
     background: "#FCFCFC"
     logo: assets/favicon_logo.ico
     left:
-      - href: index.qmd
+      - href: https://jonathanjayes.com
         text: Home
+      - href: index.qmd
+        text: Blog
       - href: about.qmd
         text: About
       - href: cv.qmd
         text: CV
-      # - href: content/phd-planning.qmd
       - href: content/teaching.qmd
       - href: content/research.qmd
         text: Research
@@ -28,22 +31,12 @@ website:
       - href: content/data.qmd
         text: Data
     right: 
-      - text: "Web Apps"
-        menu:
-        - text: "Second Hand Car Price Comparison Tool"
-          href: http://jonathan-jayes.shinyapps.io/gumtree-price-explorer
-        - text: "Production Functions Shiny App"
-          href: https://github.com/j-jayes/production-functions
-        - text: "Economics literature explorer"
-          href: https://github.com/j-jayes/NBER-methods
-        - text: "Europe's Regional Development Explorer"
-          href: https://github.com/j-jayes/Roses-Wolf-database-on-regional-GDP
-      - text: "Fun stuff"
+      - text: "More"
         menu:
         - text: "My personal cookbook"
-          href: "https://j-jayes.github.io/recipes/"
+          href: https://j-jayes.github.io/recipes/
         - text: "Generative AI reports"
-          href: "content/generative-ai-articles-listing.qmd"
+          href: content/generative-ai-articles-listing.qmd
       - text: "{{< fa brands github >}}"
         href: https://github.com/j-jayes/interlude-one
 
@@ -63,10 +56,3 @@ execute:
   message: false
   freeze: true
 
-# react:
-#   resources: "posts/2025-02-27-react-production-functions/_resources"
-#   components: "posts/2025-02-27-react-production-functions/_components"
-
-react:
-  resources: "_components"
-  components: "_components"

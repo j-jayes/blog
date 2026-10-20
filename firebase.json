@@ -1,10 +1,12 @@
 {
   "hosting": {
+    "site": "jonathanjayes-com",
     "public": "docs",
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "_redirects"
     ],
     "cleanUrls": true,
     "trailingSlash": false

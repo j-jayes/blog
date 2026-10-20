@@ -66,7 +66,7 @@ Two workflows exist in `.github/workflows/`:
 
 Both workflows:
 1. Check out the repo
-2. Install Quarto + R 4.4 + renv dependencies
+2. Install Quarto (no R; frozen outputs in `_freeze/` are reused)
 3. Run `quarto render`
 4. Deploy via `FirebaseExtended/action-hosting-deploy@v0`
 

@@ -2,7 +2,7 @@
 title: UK Importers' Guide to Navigating Freight Shipping Trends 2023-2024
 description: |
   A post about trends in the shipping industry targetted at importers in the UK.
-image: "https://interludeone.com/posts/2021-04-03-container-ships/container-ships_files/figure-html/unnamed-chunk-6-1.png"
+image: "https://blog.jonathanjayes.com/posts/2021-04-03-container-ships/container-ships_files/figure-html/unnamed-chunk-6-1.png"
 author:
   - name: Jonathan Jayes & ChatGPT
 date: 2023-11-09
@@ -10,7 +10,7 @@ date: 2023-11-09
 
 The freight shipping industry is undergoing significant changes that are shaping the way goods are moved globally. For UK importers, understanding these trends is not just about staying informed — it's about staying ahead. This guide synthesizes the current and forecasted trends to help UK businesses navigate the complex shipping landscape in the coming year.
 
-![Freighters are diverging in size with an increase in the number of both small and nimble vessels and massive container ships.[See post on trends in vessel size](https://interludeone.com/posts/2021-04-03-container-ships/container-ships)](https://interludeone.com/posts/2021-04-03-container-ships/container-ships_files/figure-html/unnamed-chunk-6-1.png)
+![Freighters are diverging in size with an increase in the number of both small and nimble vessels and massive container ships.[See post on trends in vessel size](../../posts/2021-04-03-container-ships/container-ships.Rmd)](https://blog.jonathanjayes.com/posts/2021-04-03-container-ships/container-ships_files/figure-html/unnamed-chunk-6-1.png)
 
 ## Trends in the Freight Shipping Industry
 

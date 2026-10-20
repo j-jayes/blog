@@ -1,5 +1,5 @@
 ---
-pagetitle: "Home - Interlude One"
+pagetitle: "Blog - Jonathan Jayes"
 listing:
   contents: posts
   sort:
