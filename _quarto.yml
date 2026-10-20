@@ -33,8 +33,14 @@ website:
     right: 
       - text: "More"
         menu:
+        - text: "Talks and workshops"
+          href: https://talks.jonathanjayes.com
+        - text: "Projects"
+          href: https://projects.jonathanjayes.com
         - text: "My personal cookbook"
-          href: https://j-jayes.github.io/recipes/
+          href: https://recipes.jonathanjayes.com
+        - text: "Instagram"
+          href: https://insta.jonathanjayes.com
         - text: "Generative AI reports"
           href: content/generative-ai-articles-listing.qmd
       - text: "{{< fa brands github >}}"
