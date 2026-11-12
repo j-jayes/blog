@@ -1,0 +1,258 @@
+---
+title: "Make your own website: three ways, from an hour to a weekend"
+author: "Jonathan Jayes"
+date: "11-12-2026"
+description: "A companion to my talk at the Lund PhD career day. Google Sites, a Quarto website, or a full React and FastAPI app - what each takes, and a template to steal."
+categories: [advice, quarto, careers]
+format:
+    html:
+        code-fold: false
+        code-block-border-left: "#31BAE9"
+        code-overflow: wrap
+---
+
+## Purpose
+
+Today I spoke at the PhD student career day at Lund. The one-line version of the talk was *be visible before you need it*. Every opportunity I've had since 2022 started with something I did in public - a tweet, a half-finished project, turning up at a meetup in Malmö more than once.
+
+The first piece of advice on my last slide was **make a website**. LinkedIn is fine, and you should cross-post there, but you don't own it. A website is the one place on the internet where you decide what goes first.
+
+If you scanned the QR code - welcome! This post walks through three ways to do it, from an hour on a Tuesday evening to a weekend you won't get back.
+
+## What should go on it?
+
+Less than you think. I'd suggest three things:
+
+1. **A short bio.** Who you are, what you work on, and where you're heading. Three or four sentences, with a photo where you look like a person rather than a passport.
+2. **Links to your research.** Papers, working papers, your thesis, a talk. Link to a PDF or a DOI, not a citation someone has to go and find.
+3. **Perhaps a blog.** This is the optional bit, and the bit that does the most work. A post about something you're genuinely interested in - a chart you made, a dataset you found, a tool you figured out - tells a future employer far more than a list of publications does.
+
+That's it. Nobody has ever been hired because of the animations on their homepage.
+
+## Three options at a glance
+
+| | Google Sites | Quarto website | React + FastAPI |
+|:---|:---|:---|:---|
+| **Time to a first version** | An hour | An afternoon | A weekend, minimum |
+| **Cost** | Free | Free, plus ~150 SEK/year for a domain | Domain plus cloud hosting |
+| **Control over the look** | A little | Quite a lot | Everything |
+| **Good for** | Getting something up this week | Academics who write, blog or teach | People who want to build apps too |
+
+My honest recommendation: if you've never made a website, start with option 1 tonight. If you write code for your research already, go for option 2.
+
+---
+
+## Option 1: Google Sites, the classic academic page
+
+This is what a large share of economics job market candidates use, and for good reason. It's free, it's drag and drop, it looks clean, and it can't really break.
+
+### How to set it up
+
+1. Go to [sites.google.com](https://sites.google.com) and sign in with a Google account. Use a personal one, not your university account - you'll want to keep it after you leave.
+2. Click **Blank site**. Pick a theme (*Simple* or *Diplomat* are hard to get wrong).
+3. Add pages from the **Pages** panel on the right: *Home*, *Research*, *Teaching*, *CV*.
+4. Paste in the template below and edit.
+5. Click **Publish** and choose a web address. It will look like `sites.google.com/view/yourname`.
+6. Optional: buy a domain (see option 2) and connect it under **Settings → Custom domains**.
+
+### The template
+
+Google Sites doesn't understand markdown, so this is plain text. Paste each block into a text box, make the lines in CAPITALS into headings (Title, Heading or Subheading in the text box menu), and replace everything in square brackets.
+
+```text
+[YOUR NAME]
+[PhD candidate / Researcher] in [field] at [university]
+
+ABOUT
+I'm a [nth]-year PhD student in [field] at [university], supervised by
+[supervisor]. My research looks at [the question you care about, in plain
+words, one sentence].
+
+Before my PhD I [studied / worked as / did something interesting] at
+[place]. I'm on the job market in [year] and interested in roles in
+[academia / industry / policy / anything with a stable salary].
+
+[Email] · [LinkedIn] · [GitHub] · [Google Scholar] · [CV (PDF)]
+
+
+RESEARCH
+
+Published and forthcoming
+[Paper title] (with [co-authors]). [Journal], [year]. [PDF] [DOI]
+One or two sentences on what you found. Write it for your aunt.
+
+Working papers
+[Paper title]. [Year]. [PDF]
+One or two sentences on what you found.
+
+Work in progress
+[Paper title] (with [co-authors]).
+
+
+TEACHING
+[Course name], [university], [role: teaching assistant / lecturer], [years]
+
+
+ELSEWHERE
+[A talk you gave, a dataset you made, a blog post, a podcast you were on]
+```
+
+Two small things make a big difference. Turn every [PDF] and [DOI] into a real link (select the text and press Ctrl/Cmd + K), and put your CV in Google Drive, set to "Anyone with the link can view", and link to that.
+
+### A filled-in example, for illustration
+
+So that it doesn't feel too abstract, here is the template filled in with my own details, with the level of honesty you probably shouldn't use on yours.
+
+> **Jonathan Jayes**
+>
+> Data scientist at Nexer Insight. Former economic historian. Recovering Stata user.
+>
+> **About**
+>
+> I did a PhD in economic history at Lund University, which means I can tell you in some detail how Swedish farm workers' careers changed when the light bulb turned up in the 1920s. Nobody has asked yet, but I'm ready.
+>
+> My research interests are electricity, and asking language models to read old dictionaries so that I don't have to. I grew up in South Africa, where electricity is more of an aspiration than a utility, so I suppose the topic chose me.
+>
+> **Research**
+>
+> **Like moths to a flame: an individual level approach to technological change in 20th century Sweden.** PhD thesis, Lund University, 2025.
+> *Four papers, roughly 70,000 biographies, and two very patient supervisors.*
+>
+> **[The one about the power line](https://www.sciencedirect.com/science/article/pii/S001449832500049X)** (with Jakob Molinder and Kerstin Enflo). *Explorations in Economic History*, 2025.
+> *People born in parishes along a power line in 1920s Sweden earned over 30% more by 1930, and the lowest earners gained most. The power line did all of the work - I just found it on a map.*
+>
+> **Teaching**
+>
+> Taught Stata to students who would have preferred R. Taught map-making to students who would have preferred lunch.
+
+The real version would trade a couple of the jokes for links. But I'd keep one. A bio that sounds like a person is much easier to remember than one that sounds like a grant application.
+
+---
+
+## Option 2: a Quarto website
+
+This is what I use. This blog is a Quarto website, and for a few years my whole site was one too.
+
+[Quarto](https://quarto.org) is an open-source publishing system from Posit, the people behind RStudio. You write pages in markdown (plain text with a few symbols for headings and links), optionally with R or Python code chunks in between, and Quarto renders it all into a website. The same tool makes slides (the talk you just saw was made with it), papers, and books.
+
+I think it's fantastic for academic publishing for one reason above all: your charts and your website live in the same place. Write a blog post about your data, and the code that made the figure sits right inside the post.
+
+For a richer example, have a look at the [course site for EOSE09](https://j-jayes.github.io/EOSE09-site/), the regional development course I taught at Lund. It has the lectures, the computer labs and the datasets, and it's all just Quarto.
+
+Budget an afternoon for this. More control, but more ways to get stuck.
+
+### How to set it up
+
+**1. Install [Quarto](https://quarto.org/docs/get-started/)**, and an editor - VS Code, Positron or RStudio all work well.
+
+**2. Create a project.** In a terminal:
+
+```bash
+quarto create project website mysite
+cd mysite
+quarto preview
+```
+
+A browser window opens with a working site. Every time you save a file, it refreshes.
+
+**3. Edit `_quarto.yml`**, which controls the whole site:
+
+```yaml
+project:
+  type: website
+
+website:
+  title: "Your Name"
+  navbar:
+    left:
+      - href: index.qmd
+        text: About
+      - research.qmd
+      - blog.qmd
+
+format:
+  html:
+    theme: cosmo
+```
+
+**4. Make `index.qmd` your about page.** Quarto has built-in templates for exactly this, so you get a photo and a row of links for free:
+
+```markdown
+---
+title: "Your Name"
+about:
+  template: jolla
+  image: profile.jpg
+  links:
+    - icon: envelope
+      text: Email
+      href: mailto:you@example.com
+    - icon: github
+      text: GitHub
+      href: https://github.com/yourname
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/yourname
+---
+
+I'm a PhD student in [field] at [university]. My research looks at ...
+```
+
+Try swapping `jolla` for `trestles`, `solana`, `marquee` or `broadside` and see which you like. This blog's about page uses `trestles`.
+
+**5. Add a blog.** Make a `posts/` folder, put each post in its own folder with an `index.qmd`, and create `blog.qmd`:
+
+```markdown
+---
+title: "Blog"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+---
+```
+
+Quarto builds the list of posts for you, with dates, descriptions and preview images.
+
+**6. Deploy it for free on Netlify.** Run `quarto render`, which builds the whole site into a `_site/` folder. Then the lazy way: log in to [Netlify](https://app.netlify.com/drop) and drag the `_site/` folder onto the page. It's live in about ten seconds.
+
+The better way is to push the project to GitHub and run `quarto publish netlify` once. After that, updating the site is a single command. (I've since moved this blog to Firebase, for reasons that are mostly about me having too many subdomains. Netlify is still where I'd start.)
+
+**7. Buy a domain.** A `.com` or `.se` costs somewhere around 100 to 200 SEK a year from Namecheap, Cloudflare, Porkbun, Loopia or similar. Then you need to point it at Netlify by adding a couple of DNS records - the address book entries that tell the internet where your site lives.
+
+This is the step that used to eat an evening. Now I'd just ask Claude. Something like:
+
+> I've bought `yourname.com` on Namecheap and have a site deployed on Netlify at `yourname.netlify.app`. Walk me through, step by step, exactly which DNS records to add on Namecheap and what to set in Netlify so that both `yourname.com` and `www.yourname.com` work with HTTPS.
+
+It will tell you which boxes to click. DNS changes can take an hour or so to spread, so don't panic if it doesn't work straight away.
+
+---
+
+## Option 3: a React app with a FastAPI backend
+
+This is the deep end. A React frontend (the bit that runs in the browser), a FastAPI backend in Python (the bit that runs on a server and can do things - talk to a database, call a model, run your analysis), hosted on a cloud provider like Vercel, Netlify, Google Cloud Run, Fly.io or Render.
+
+My main site, [jonathanjayes.com](https://jonathanjayes.com), is a cousin of this (SvelteKit rather than React, but the same idea), and it was a lot more work than it looks.
+
+It's only worth it if:
+
+- you want something that looks genuinely fresh, not like a template, **and**
+- you'll use it for more than a homepage - demos of your research, small apps, a tool other people can use.
+
+If that's you, the good news is that this is exactly the sort of thing coding agents like Claude Code are now very good at scaffolding. Describe what you want, let it set up the project, and then spend your time on the bits that are actually yours.
+
+For most people reading this, though, it's overkill. A Quarto site with three good blog posts will do more for you than a beautiful React app with nothing on it.
+
+---
+
+## What would I do?
+
+If you're a PhD student reading this after the talk:
+
+1. **This week:** make a Google Site or a Quarto site with a bio and links to your research. Don't polish it. Publish it.
+2. **This month:** write one blog post about something you're genuinely interested in. It doesn't have to be your thesis. My first posts were about the colour of cars in South Africa and the size of cargo ships.
+3. **Then:** share it on LinkedIn, Bluesky, wherever your people are. Link back to your own site.
+
+I can trace a lot of what happened to me back to doing this, but that's one person's story and not a controlled experiment. Still, I think it's cheap enough to be worth trying.
+
+Thanks for coming to the talk, and good luck! If you make a site, send it to me - I'd love to have a look.
