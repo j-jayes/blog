@@ -23,7 +23,7 @@ Until it doesn't.
 
 The symptom is maddening: the site looks perfect locally, but after pushing to GitHub the reveal.js slides are completely unstyled — raw HTML, no fonts, no layout, no colour. Everything else on the site is fine.
 
-![My slides rendered without any styling on GitHub Pages](assets/unstyled-slides.png)
+![My slides rendered without any styling on GitHub Pages](/posts/2026-05-15-quarto-revealjs-github-pages-gitignore/assets/unstyled-slides.png)
 
 ## The cause
 
