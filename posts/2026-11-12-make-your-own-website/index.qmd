@@ -26,7 +26,7 @@ If you scanned the QR code - welcome! This post walks through three ways to do i
 :::
 
 ::: {}
-![New Year's in Lund, 2025. Nothing to do with websites, but it's my blog. Photo: Jonathan Jayes.](assets/lund-new-year-2025.jpg){fig-alt="Red and white fireworks bursting over bare trees, with a crowd gathered in a square in Lund and old brick buildings behind." .lightbox}
+![New Year's in Lund, 2025. Nothing to do with websites, but it's my blog. Photo: Jonathan Jayes.](/posts/2026-11-12-make-your-own-website/assets/lund-new-year-2025.jpg){fig-alt="Red and white fireworks bursting over bare trees, with a crowd gathered in a square in Lund and old brick buildings behind." .lightbox}
 :::
 
 ::::
