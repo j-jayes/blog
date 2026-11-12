@@ -4,6 +4,8 @@ author: "Jonathan Jayes"
 date: "11-12-2026"
 description: "A companion to my talk at the Lund PhD career day. Google Sites, a Quarto website, or a full React and FastAPI app - what each takes, and a template to steal."
 categories: [advice, quarto, careers]
+image: assets/preview.jpg
+image-alt: "Red and white fireworks over bare trees and a crowd in a square in Lund on New Year's Eve."
 format:
     html:
         code-fold: false
@@ -13,11 +15,21 @@ format:
 
 ## Purpose
 
+:::: {layout="[60,40]" layout-valign="top"}
+
+::: {}
 Today I spoke at the PhD student career day at Lund. The one-line version of the talk was *be visible before you need it*. Every opportunity I've had since 2022 started with something I did in public - a tweet, a half-finished project, turning up at a meetup in Malmö more than once.
 
 The first piece of advice on my last slide was **make a website**. LinkedIn is fine, and you should cross-post there, but you don't own it. A website is the one place on the internet where you decide what goes first.
 
 If you scanned the QR code - welcome! This post walks through three ways to do it, from an hour on a Tuesday evening to a weekend you won't get back.
+:::
+
+::: {}
+![New Year's in Lund, 2025. Nothing to do with websites, but it's my blog. Photo: Jonathan Jayes.](assets/lund-new-year-2025.jpg){fig-alt="Red and white fireworks bursting over bare trees, with a crowd gathered in a square in Lund and old brick buildings behind." .lightbox}
+:::
+
+::::
 
 ## What should go on it?
 
